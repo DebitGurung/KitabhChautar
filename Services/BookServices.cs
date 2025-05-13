@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using KitabhChauta.Interfaces;
+using KitabhChauta.Model;
 using Microsoft.EntityFrameworkCore;
-using KitabhChautari;
-using KitabhChautari.Dto;
-using KitabhChautari.Dtos;
 
-namespace KitabhChautari.Services
+namespace KitabhChauta.Services
 {
     public class BookService : IBookService
     {
@@ -17,142 +13,63 @@ namespace KitabhChautari.Services
             _context = context;
         }
 
-        public async Task<List<BookDto>> GetAllBooksAsync()
+        public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
             return await _context.Books
-                .Select(b => new BookDto
-                {
-                    BookId = b.BookId,
-                    Title = b.Title,
-                    Author = b.Author,
-                    Genre = b.Genre,
-                    ISBN = b.ISBN,
-                    Price = b.Price,
-                    PublishedDate = b.PublishedDate,
-                    Pages = b.Pages,
-                    StockCount = b.StockCount,
-                    Synopsis = b.Synopsis,
-                    CoverImageUrl = b.CoverImageUrl,
-                    AdminId = b.AdminId,
-                    MemberId = b.MemberId,
-                    StaffId = b.StaffId
-                })
+                .Include(b => b.Author)
+                .Include(b => b.Genre)
+                .Include(b => b.Publisher)
                 .ToListAsync();
         }
 
-        public async Task<BookDto?> GetBookByIdAsync(int id)
+        public async Task<Book?> GetBookByIdAsync(int id)
         {
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
-            {
-                return null;
-            }
-
-            return new BookDto
-            {
-                BookId = book.BookId,
-                Title = book.Title,
-                Author = book.Author,
-                Genre = book.Genre,
-                ISBN = book.ISBN,
-                Price = book.Price,
-                PublishedDate = book.PublishedDate,
-                Pages = book.Pages,
-                StockCount = book.StockCount,
-                Synopsis = book.Synopsis,
-                CoverImageUrl = book.CoverImageUrl,
-                AdminId = book.AdminId,
-                MemberId = book.MemberId,
-                StaffId = book.StaffId
-            };
+            return await _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Genre)
+                .Include(b => b.Publisher)
+                .FirstOrDefaultAsync(b => b.BookId == id);
         }
 
-        public async Task<BookDto> CreateBookAsync(BookDto bookDto)
+        public async Task<Book> CreateBookAsync(Book book)
         {
-            if (bookDto == null)
-            {
-                throw new ArgumentNullException(nameof(bookDto));
-            }
-
-            var book = new Book
-            {
-                BookId = bookDto.BookId,
-                Title = bookDto.Title,
-                Author = bookDto.Author,
-                Genre = bookDto.Genre,
-                ISBN = bookDto.ISBN,
-                Price = bookDto.Price,
-                PublishedDate = bookDto.PublishedDate,
-                Pages = bookDto.Pages,
-                StockCount = bookDto.StockCount,
-                Synopsis = bookDto.Synopsis,
-                CoverImageUrl = bookDto.CoverImageUrl,
-                AdminId = bookDto.AdminId,
-                MemberId = bookDto.MemberId,
-                StaffId = bookDto.StaffId
-            };
+            // Ensure ID isn't set (let database generate it)
+            book.BookId = 0;
 
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
-
-            bookDto.BookId = book.BookId; // Update DTO with generated ID
-            return bookDto;
+            return book;
         }
 
-        public async Task<bool> UpdateBookAsync(int id, BookDto bookDto)
+        public async Task UpdateBookAsync(Book book)
         {
-            if (bookDto == null || id != bookDto.BookId)
-            {
-                return false;
-            }
-
-            var existingBook = await _context.Books.FindAsync(id);
-            if (existingBook == null)
-            {
-                return false;
-            }
-
-            existingBook.Title = bookDto.Title;
-            existingBook.Author = bookDto.Author;
-            existingBook.Genre = bookDto.Genre;
-            existingBook.ISBN = bookDto.ISBN;
-            existingBook.Price = bookDto.Price;
-            existingBook.PublishedDate = bookDto.PublishedDate;
-            existingBook.Pages = bookDto.Pages;
-            existingBook.StockCount = bookDto.StockCount;
-            existingBook.Synopsis = bookDto.Synopsis;
-            existingBook.CoverImageUrl = bookDto.CoverImageUrl;
-            existingBook.AdminId = bookDto.AdminId;
-            existingBook.MemberId = bookDto.MemberId;
-            existingBook.StaffId = bookDto.StaffId;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return false;
-            }
+            _context.Entry(book).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteBookAsync(int id)
+        public async Task DeleteBookAsync(int id)
         {
             var book = await _context.Books.FindAsync(id);
-            if (book == null)
+            if (book != null)
             {
-                return false;
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
             }
-
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-            return true;
         }
 
-        public async Task<bool> BookExistsAsync(int id)
+        public async Task<bool> AuthorExistsAsync(int authorId)
         {
-            return await _context.Books.AnyAsync(b => b.BookId == id);
+            return await _context.Authors.AnyAsync(a => a.Author_id == authorId);
+        }
+
+        public async Task<bool> GenreExistsAsync(int genreId)
+        {
+            return await _context.Genres.AnyAsync(g => g.Genre_id == genreId);
+        }
+
+        public async Task<bool> PublisherExistsAsync(int publisherId)
+        {
+            return await _context.Publishers.AnyAsync(p => p.Publisher_id == publisherId);
         }
     }
 }

@@ -1,46 +1,51 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using KitabhChautari;
+using KitabhChauta.Enum;
 
-namespace KitabhChautari.Dtos
+namespace KitabhChauta.Dto
 {
-    public class BookDto
+    public class BookDTO
     {
         public int BookId { get; set; }
 
-        [Required]
-        [MaxLength(200)]
+        [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; } = string.Empty;
 
-        [Required]
-        [MaxLength(100)]
-        public string Author { get; set; } = string.Empty;
-
-        [Required]
-        public Genre Genre { get; set; }
-
-        [Required]
-        [MaxLength(13)]
+        [Required(ErrorMessage = "ISBN is required")]
         public string ISBN { get; set; } = string.Empty;
 
-        [Range(0.01, 10000.00)]
+        [Required(ErrorMessage = "Price is required")]
+        [Range(0, double.MaxValue, ErrorMessage = "Price must be non-negative")]
         public decimal Price { get; set; }
 
         public DateTime PublishedDate { get; set; } = DateTime.UtcNow;
 
-        [Range(1, 10000)]
+        [Range(0, int.MaxValue, ErrorMessage = "Pages must be non-negative")]
         public int Pages { get; set; }
 
-        [Range(0, int.MaxValue)]
+        [Range(0, int.MaxValue, ErrorMessage = "Stock count must be non-negative")]
         public int StockCount { get; set; }
 
-        [MaxLength(1000)]
         public string Synopsis { get; set; } = string.Empty;
 
-        [MaxLength(500)]
         public string CoverImageUrl { get; set; } = string.Empty;
 
-        public int? AdminId { get; set; }
-        public int? MemberId { get; set; }
-        public int? StaffId { get; set; }
+        public bool IsOnSale { get; set; } = false;
+
+        [Range(0, 1, ErrorMessage = "Discount must be between 0 (0%) and 1 (100%)")]
+        public decimal? DiscountPercentage { get; set; }
+
+        public Category? Category { get; set; }
+
+        [Required(ErrorMessage = "Author ID is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Author ID must be a positive integer")]
+        public int Author_id { get; set; }
+
+        [Required(ErrorMessage = "Genre ID is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Genre ID must be a positive integer")]
+        public int Genre_id { get; set; }
+
+        [Required(ErrorMessage = "Publisher ID is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Publisher ID must be a positive integer")]
+        public int Publisher_id { get; set; }
     }
 }

@@ -28,7 +28,6 @@ public class Member
     public MembershipStatus MembershipStatus { get; set; } 
 
   
-    // One-to-Many with Book 
-    public ICollection<Book> Books { get; set; } = new List<Book>();
+ 
 }
 

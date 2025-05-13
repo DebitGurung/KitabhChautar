@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using KitabhChautari;
 using BCrypt.Net;
 using KitabhChautari.Dto;
-using KitabhChautari.Dtos;
+
 
 namespace KitabhChautari.Services
 {
@@ -195,63 +195,7 @@ namespace KitabhChautari.Services
 
         public async Task<bool> MemberExists(int id) => await EntityExists<Member>(id);
 
-        // Book CRUD
-        public async Task<IEnumerable<Book>> GetAllBooks() => await _context.Books.ToListAsync();
-
-        public async Task<Book> GetBookById(int id)
-            => await _context.Books.FindAsync(id) ?? throw new KeyNotFoundException("Book not found");
-
-        public async Task<Book> CreateBook(BookDto dto, int adminId)
-        {
-            var admin = await _context.Admins.FindAsync(adminId)
-                ?? throw new KeyNotFoundException("Admin not found");
-
-            var book = new Book
-            {
-                Title = dto.Title,
-                Author = dto.Author,
-                Genre = dto.Genre,
-                ISBN = dto.ISBN,
-                Price = dto.Price,
-                PublishedDate = dto.PublishedDate,
-                Pages = dto.Pages,
-                StockCount = dto.StockCount,
-                Synopsis = dto.Synopsis,
-                CoverImageUrl = dto.CoverImageUrl,
-                AdminId = adminId,
-                MemberId = dto.MemberId,
-                StaffId = dto.StaffId
-            };
-
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-            return book;
-        }
-        public async Task UpdateBook(int id, BookDto dto)
-        {
-            var book = await _context.Books.FindAsync(id)
-                ?? throw new KeyNotFoundException("Book not found");
-
-            book.Title = dto.Title;
-            book.Author = dto.Author;
-            book.Genre = dto.Genre;
-            book.ISBN = dto.ISBN;
-            book.Price = dto.Price;
-            book.PublishedDate = dto.PublishedDate;
-            book.Pages = dto.Pages;
-            book.StockCount = dto.StockCount;
-            book.Synopsis = dto.Synopsis;
-            book.CoverImageUrl = dto.CoverImageUrl;
-            book.MemberId = dto.MemberId;
-            book.StaffId = dto.StaffId;
-
-            _context.Entry(book).State = EntityState.Modified;
-            await SaveWithConcurrencyCheck<Book>(id, BookExists);
-        }
-
-        public async Task DeleteBook(int id) => await DeleteEntity<Book>(id);
-
-        public async Task<bool> BookExists(int id) => await EntityExists<Book>(id);
+        
 
         // Generic Helpers
         private async Task DeleteEntity<T>(int id) where T : class

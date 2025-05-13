@@ -12,7 +12,7 @@ public class MemberDto
     [Required]
     [MaxLength(100)]
     [MinLength(2)]
-    public string FirstName { get; set; }
+    public required string FirstName { get; set; }
 
     /// <summary>
     /// The last name of the member.
@@ -20,14 +20,14 @@ public class MemberDto
     [Required]
     [MaxLength(100)]
     [MinLength(2)]
-    public string LastName { get; set; }
+    public required string LastName { get; set; }
 
     /// <summary>
     /// The email address of the member.
     /// </summary>
     [Required]
     [EmailAddress]
-    public string Email { get; set; }
+    public required string Email { get; set; }
 
     /// <summary>
     /// The date of birth of the member.

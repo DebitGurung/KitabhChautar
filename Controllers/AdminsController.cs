@@ -1,6 +1,5 @@
 ﻿using KitabhChautari;
 using KitabhChautari.Dto;
-using KitabhChautari.Dtos;
 using KitabhChautari.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -289,81 +288,5 @@ public class AdminsController : ControllerBase
         }
     }
 
-    // ---------------- BOOKS ----------------
-    [HttpGet("books")]
-    public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
-        => Ok(await _adminService.GetAllBooks());
-
-    [HttpGet("books/{id}")]
-    public async Task<ActionResult<Book>> GetBook(int id)
-    {
-        try
-        {
-            var book = await _adminService.GetBookById(id);
-            return Ok(book);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-    }
-
-    [HttpPost("books")]
-    public async Task<ActionResult<Book>> PostBook([FromBody] BookDto dto)
-    {
-        try
-        {
-            if (dto.AdminId == null)
-                return BadRequest("AdminId is required");
-
-            var created = await _adminService.CreateBook(dto, dto.AdminId.Value);
-            return CreatedAtAction(nameof(GetBook), new { id = created.BookId }, created);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound("Admin not found");
-        }
-    }
-
-    [HttpPut("books/{id}")]
-    public async Task<IActionResult> UpdateBook(int id, BookDto dto)
-    {
-        try
-        {
-            await _adminService.UpdateBook(id, dto);
-            return NoContent();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await _adminService.BookExists(id))
-                return NotFound();
-            throw;
-        }
-    }
-
-    [HttpDelete("books/{id}")]
-    public async Task<IActionResult> DeleteBook(int id)
-    {
-        try
-        {
-            await _adminService.DeleteBook(id);
-            return NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-    }
+   
 }

@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using KitabhChautari.Dto;
-using KitabhChautari.Dtos;
+﻿using KitabhChauta.Model;
 
-namespace KitabhChautari.Services {
-    public interface IBookService {
-        Task<List<BookDto>> GetAllBooksAsync(); 
-        Task<BookDto?> GetBookByIdAsync(int id);
-        Task<BookDto> CreateBookAsync(BookDto bookDto);
-        Task<bool> UpdateBookAsync(int id, BookDto bookDto);
-        Task<bool> DeleteBookAsync(int id);
-        Task<bool> BookExistsAsync(int id);
+namespace KitabhChauta.Interfaces
+{
+    public interface IBookService
+    {
+        Task<IEnumerable<Book>> GetAllBooksAsync();
+        Task<Book?> GetBookByIdAsync(int id);
+        Task<Book> CreateBookAsync(Book book);
+        Task UpdateBookAsync(Book book);
+        Task DeleteBookAsync(int id);
+        Task<bool> AuthorExistsAsync(int authorId);
+        Task<bool> GenreExistsAsync(int genreId);
+        Task<bool> PublisherExistsAsync(int publisherId);
     }
 }

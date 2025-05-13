@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KitabhChauta.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,12 @@ public class KitabhChautariDbContext : DbContext
     public DbSet<User> Users { get; set; }
 
     public DbSet<Admin> Admins { get; set; }
+
+    public DbSet<Author> Authors { get; set; } 
+
+    public DbSet<Genre> Genres { get; set; } 
+
+    public DbSet<Publisher> Publishers { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -31,9 +38,6 @@ public class KitabhChautariDbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(200);
 
-            entity.Property(b => b.Author)
-                .IsRequired()
-                .HasMaxLength(100);
 
             entity.Property(b => b.ISBN)
                 .IsRequired()
@@ -84,25 +88,60 @@ public class KitabhChautariDbContext : DbContext
                 .IsUnique();
 
            
-            // One-to-Many with Book
-            entity.HasMany(m => m.Books)
-                .WithOne(b => b.Member)
-                .HasForeignKey(b => b.MemberId)
-                .OnDelete(DeleteBehavior.SetNull); // Changed to SetNull for consistency
+            
         });
 
 
-        //  Admin manages many Books (one-to-many)
-        modelBuilder.Entity<Admin>()
-            .HasMany(a => a.Books)
-            .WithOne(b => b.Admin)
-            .HasForeignKey(b => b.AdminId);
+        
 
-        // Staff manages many Books (one-to-many)
-        modelBuilder.Entity<Staff>()
-            .HasMany(s => s.Books)
-            .WithOne(b => b.Staff)
-            .HasForeignKey(b => b.StaffId);
+       
+        // Author Configuration
+        modelBuilder.Entity<Author>(entity =>
+        {
+            entity.HasKey(a => a.Author_id);
+
+            entity.Property(a => a.Author_Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            // One-to-Many with Book
+            entity.HasMany(a => a.Books)
+                .WithOne(b => b.Author)
+                .HasForeignKey(b => b.Author_id)
+                .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete
+        });
+
+        // Genre Configuration
+        modelBuilder.Entity<Genre>(entity =>
+        {
+            entity.HasKey(g => g.Genre_id);
+
+            entity.Property(g => g.Genre_Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            // One-to-Many with Book
+            entity.HasMany(g => g.Books)
+                .WithOne(b => b.Genre)
+                .HasForeignKey(b => b.Genre_id)
+                .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete
+        });
+
+        // Publisher Configuration
+        modelBuilder.Entity<Publisher>(entity =>
+        {
+            entity.HasKey(p => p.Publisher_id);
+
+            entity.Property(p => p.Publisher_Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            // One-to-Many with Book
+            entity.HasMany(p => p.Books)
+                .WithOne(b => b.Publisher)
+                .HasForeignKey(b => b.Publisher_id)
+                .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete
+        });
 
 
     }
@@ -110,11 +149,5 @@ public class KitabhChautariDbContext : DbContext
 
     
 
-public DbSet<Member> Member { get; set; } = default!;
 
-public DbSet<Staff> Staff { get; set; } = default!;
-
-public DbSet<User> User { get; set; } = default!;
-
-public DbSet<Admin> Admin { get; set; } = default!;
 }

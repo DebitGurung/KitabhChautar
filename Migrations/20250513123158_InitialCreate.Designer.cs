@@ -11,15 +11,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KitabhChauta.Migrations
 {
     [DbContext(typeof(KitabhChautariDbContext))]
-    [Migration("20250512112018_DropMembersUserIdForeignKey")]
-    partial class DropMembersUserIdForeignKey
+    [Migration("20250513123158_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.15")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -61,10 +61,28 @@ namespace KitabhChauta.Migrations
 
                     b.HasKey("AdminId");
 
-                    b.ToTable("Admin");
+                    b.ToTable("Admins");
                 });
 
-            modelBuilder.Entity("Book", b =>
+            modelBuilder.Entity("KitabhChauta.Model.Author", b =>
+                {
+                    b.Property<int>("Author_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Author_id"));
+
+                    b.Property<string>("Author_Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Author_id");
+
+                    b.ToTable("Authors");
+                });
+
+            modelBuilder.Entity("KitabhChauta.Model.Book", b =>
                 {
                     b.Property<int>("BookId")
                         .ValueGeneratedOnAdd()
@@ -72,19 +90,20 @@ namespace KitabhChauta.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BookId"));
 
-                    b.Property<int?>("AdminId")
+                    b.Property<int>("Author_id")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<int?>("Category")
+                        .HasColumnType("integer");
 
                     b.Property<string>("CoverImageUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Genre")
+                    b.Property<decimal?>("DiscountPercentage")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Genre_id")
                         .HasColumnType("integer");
 
                     b.Property<string>("ISBN")
@@ -92,8 +111,8 @@ namespace KitabhChauta.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
 
-                    b.Property<int?>("MemberId")
-                        .HasColumnType("integer");
+                    b.Property<bool>("IsOnSale")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Pages")
                         .HasColumnType("integer");
@@ -104,7 +123,7 @@ namespace KitabhChauta.Migrations
                     b.Property<DateTime>("PublishedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("StaffId")
+                    b.Property<int>("Publisher_id")
                         .HasColumnType("integer");
 
                     b.Property<int>("StockCount")
@@ -121,15 +140,51 @@ namespace KitabhChauta.Migrations
 
                     b.HasKey("BookId");
 
-                    b.HasIndex("AdminId");
+                    b.HasIndex("Author_id");
+
+                    b.HasIndex("Genre_id");
 
                     b.HasIndex("ISBN");
 
-                    b.HasIndex("MemberId");
-
-                    b.HasIndex("StaffId");
+                    b.HasIndex("Publisher_id");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("KitabhChauta.Model.Genre", b =>
+                {
+                    b.Property<int>("Genre_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Genre_id"));
+
+                    b.Property<string>("Genre_Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Genre_id");
+
+                    b.ToTable("Genres");
+                });
+
+            modelBuilder.Entity("KitabhChauta.Model.Publisher", b =>
+                {
+                    b.Property<int>("Publisher_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Publisher_id"));
+
+                    b.Property<string>("Publisher_Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Publisher_id");
+
+                    b.ToTable("Publishers");
                 });
 
             modelBuilder.Entity("Member", b =>
@@ -163,15 +218,10 @@ namespace KitabhChauta.Migrations
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("MemberId");
 
                     b.HasIndex("Email")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Members");
                 });
@@ -200,7 +250,7 @@ namespace KitabhChauta.Migrations
 
                     b.HasKey("StaffId");
 
-                    b.ToTable("Staff");
+                    b.ToTable("Staffs");
                 });
 
             modelBuilder.Entity("User", b =>
@@ -227,53 +277,47 @@ namespace KitabhChauta.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Book", b =>
+            modelBuilder.Entity("KitabhChauta.Model.Book", b =>
                 {
-                    b.HasOne("Admin", "Admin")
+                    b.HasOne("KitabhChauta.Model.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AdminId");
-
-                    b.HasOne("Member", "Member")
-                        .WithMany("Books")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Staff", "Staff")
-                        .WithMany("Books")
-                        .HasForeignKey("StaffId");
-
-                    b.Navigation("Admin");
-
-                    b.Navigation("Member");
-
-                    b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("Member", b =>
-                {
-                    b.HasOne("User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("Author_id")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("KitabhChauta.Model.Genre", "Genre")
+                        .WithMany("Books")
+                        .HasForeignKey("Genre_id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KitabhChauta.Model.Publisher", "Publisher")
+                        .WithMany("Books")
+                        .HasForeignKey("Publisher_id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Genre");
+
+                    b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("Admin", b =>
+            modelBuilder.Entity("KitabhChauta.Model.Author", b =>
                 {
                     b.Navigation("Books");
                 });
 
-            modelBuilder.Entity("Member", b =>
+            modelBuilder.Entity("KitabhChauta.Model.Genre", b =>
                 {
                     b.Navigation("Books");
                 });
 
-            modelBuilder.Entity("Staff", b =>
+            modelBuilder.Entity("KitabhChauta.Model.Publisher", b =>
                 {
                     b.Navigation("Books");
                 });

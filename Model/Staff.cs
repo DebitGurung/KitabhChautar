@@ -17,5 +17,5 @@ public class Staff
     [EmailAddress]
     public string Email { get; set; } = string.Empty;
 
-    public ICollection<Book> Books { get; set; } = new List<Book>();
+
 }

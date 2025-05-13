@@ -7,13 +7,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KitabhChauta.Migrations
 {
     /// <inheritdoc />
-    public partial class Data : Migration
+    public partial class InitialCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Admin",
+                name: "Admins",
                 columns: table => new
                 {
                     AdminId = table.Column<int>(type: "integer", nullable: false)
@@ -28,37 +28,33 @@ namespace KitabhChauta.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Admin", x => x.AdminId);
+                    table.PrimaryKey("PK_Admins", x => x.AdminId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Staff",
+                name: "Authors",
                 columns: table => new
                 {
-                    StaffId = table.Column<int>(type: "integer", nullable: false)
+                    Author_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false)
+                    Author_Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Staff", x => x.StaffId);
+                    table.PrimaryKey("PK_Authors", x => x.Author_id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Genres",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "integer", nullable: false)
+                    Genre_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false)
+                    Genre_Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.UserId);
+                    table.PrimaryKey("PK_Genres", x => x.Genre_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,18 +68,54 @@ namespace KitabhChauta.Migrations
                     Email = table.Column<string>(type: "text", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "date", nullable: true),
                     RegistrationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    MembershipStatus = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false)
+                    MembershipStatus = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Members", x => x.MemberId);
-                    table.ForeignKey(
-                        name: "FK_Members_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Publishers",
+                columns: table => new
+                {
+                    Publisher_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Publisher_Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Publishers", x => x.Publisher_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Staffs",
+                columns: table => new
+                {
+                    StaffId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Staffs", x => x.StaffId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,8 +125,6 @@ namespace KitabhChauta.Migrations
                     BookId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Author = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Genre = table.Column<int>(type: "integer", nullable: false),
                     ISBN = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
                     Price = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     PublishedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -102,35 +132,45 @@ namespace KitabhChauta.Migrations
                     StockCount = table.Column<int>(type: "integer", nullable: false),
                     Synopsis = table.Column<string>(type: "text", nullable: false),
                     CoverImageUrl = table.Column<string>(type: "text", nullable: false),
-                    AdminId = table.Column<int>(type: "integer", nullable: true),
-                    MemberId = table.Column<int>(type: "integer", nullable: true),
-                    StaffId = table.Column<int>(type: "integer", nullable: true)
+                    IsOnSale = table.Column<bool>(type: "boolean", nullable: false),
+                    DiscountPercentage = table.Column<decimal>(type: "numeric", nullable: true),
+                    Category = table.Column<int>(type: "integer", nullable: true),
+                    Author_id = table.Column<int>(type: "integer", nullable: false),
+                    Genre_id = table.Column<int>(type: "integer", nullable: false),
+                    Publisher_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.BookId);
                     table.ForeignKey(
-                        name: "FK_Books_Admin_AdminId",
-                        column: x => x.AdminId,
-                        principalTable: "Admin",
-                        principalColumn: "AdminId");
+                        name: "FK_Books_Authors_Author_id",
+                        column: x => x.Author_id,
+                        principalTable: "Authors",
+                        principalColumn: "Author_id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Books_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "MemberId",
-                        onDelete: ReferentialAction.SetNull);
+                        name: "FK_Books_Genres_Genre_id",
+                        column: x => x.Genre_id,
+                        principalTable: "Genres",
+                        principalColumn: "Genre_id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Books_Staff_StaffId",
-                        column: x => x.StaffId,
-                        principalTable: "Staff",
-                        principalColumn: "StaffId");
+                        name: "FK_Books_Publishers_Publisher_id",
+                        column: x => x.Publisher_id,
+                        principalTable: "Publishers",
+                        principalColumn: "Publisher_id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_AdminId",
+                name: "IX_Books_Author_id",
                 table: "Books",
-                column: "AdminId");
+                column: "Author_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_Genre_id",
+                table: "Books",
+                column: "Genre_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_ISBN",
@@ -138,25 +178,14 @@ namespace KitabhChauta.Migrations
                 column: "ISBN");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_MemberId",
+                name: "IX_Books_Publisher_id",
                 table: "Books",
-                column: "MemberId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Books_StaffId",
-                table: "Books",
-                column: "StaffId");
+                column: "Publisher_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Members_Email",
                 table: "Members",
                 column: "Email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Members_UserId",
-                table: "Members",
-                column: "UserId",
                 unique: true);
         }
 
@@ -164,19 +193,28 @@ namespace KitabhChauta.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Books");
+                name: "Admins");
 
             migrationBuilder.DropTable(
-                name: "Admin");
+                name: "Books");
 
             migrationBuilder.DropTable(
                 name: "Members");
 
             migrationBuilder.DropTable(
-                name: "Staff");
+                name: "Staffs");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Authors");
+
+            migrationBuilder.DropTable(
+                name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Publishers");
         }
     }
 }

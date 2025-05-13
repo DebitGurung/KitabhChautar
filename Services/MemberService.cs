@@ -77,20 +77,7 @@ public class MemberService : IMemberService
     public async Task<bool> MemberExists(int id)
         => await _context.Members.AnyAsync(m => m.MemberId == id);
 
-    public async Task AssignBookToMember(int memberId, int bookId)
-    {
-        var member = await _context.Members.FindAsync(memberId)
-            ?? throw new KeyNotFoundException("Member not found");
-        var book = await _context.Books.FindAsync(bookId)
-            ?? throw new KeyNotFoundException("Book not found");
-
-        if (book.MemberId.HasValue)
-            throw new InvalidOperationException("Book is already assigned to a member");
-
-        book.MemberId = memberId;
-        _context.Entry(book).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-    }
+    
 
     private async Task SaveWithConcurrencyCheck(int id)
     {
@@ -103,5 +90,10 @@ public class MemberService : IMemberService
             if (!await MemberExists(id)) throw new KeyNotFoundException("Member not found");
             throw;
         }
+    }
+
+    public Task AssignBookToMember(int memberId, int bookId)
+    {
+        throw new NotImplementedException();
     }
 }

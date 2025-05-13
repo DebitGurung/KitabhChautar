@@ -30,6 +30,5 @@ public class Admin
 
     public bool IsActive { get; set; } = true;
 
-    // Navigation property
-    public ICollection<Book> Books { get; set; } = new List<Book>();
+
 }

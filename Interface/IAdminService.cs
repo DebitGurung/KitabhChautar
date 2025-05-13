@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using KitabhChautari.Dto;
-using KitabhChautari.Dtos;
+
 
 namespace KitabhChautari.Services
 {
@@ -39,12 +39,6 @@ namespace KitabhChautari.Services
         Task DeleteMember(int id);
         Task<bool> MemberExists(int id);
 
-        // Book CRUD
-        Task<IEnumerable<Book>> GetAllBooks();
-        Task<Book> GetBookById(int id);
-        Task<Book> CreateBook(BookDto dto, int adminId);
-        Task UpdateBook(int id, BookDto dto);
-        Task DeleteBook(int id);
-        Task<bool> BookExists(int id);
+        
     }
 }
