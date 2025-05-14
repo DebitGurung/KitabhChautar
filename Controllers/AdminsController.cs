@@ -1,10 +1,8 @@
-<<<<<<< HEAD
-﻿using KitabhChautari;
+
+
 using KitabhChautari.Dto;
-=======
-﻿using KitabhChautari.Dto; // For DTOs like AdminDto, UserDto, MemberDto, StaffDto
-using kitabhChautari.Models; // For Member (and potentially Admin, User, Staff, Book if defined)
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
+using kitabhChauta.Models; // For Member (and potentially Admin, User, Staff, Book if defined)
+
 using KitabhChautari.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -55,12 +53,7 @@ namespace KitabhChautari.Controllers // Changed to KitabhChautari.Controllers fo
             }
         }
 
-<<<<<<< HEAD
-    
 
-   
-}
-=======
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAdmin(int id, AdminDto dto)
         {
@@ -101,150 +94,10 @@ namespace KitabhChautari.Controllers // Changed to KitabhChautari.Controllers fo
 
      
 
-        // ---------------- MEMBERS ----------------
-        [HttpGet("members")]
-        public async Task<ActionResult<IEnumerable<Member>>> GetMembers()
-            => Ok(await _adminService.GetAllMembers());
-
-        [HttpGet("members/{id}")]
-        public async Task<ActionResult<Member>> GetMember(int id)
-        {
-            try
-            {
-                var member = await _adminService.GetMemberById(id);
-                return Ok(member);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpPost("members")]
-        public async Task<ActionResult<Member>> PostMember([FromBody] KitabhChautari.Dto.MemberDto dto) // Corrected namespace
-        {
-            try
-            {
-                var created = await _adminService.CreateMember(dto);
-                return CreatedAtAction(nameof(GetMember), new { id = created.MemberId }, created);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("members/{id}")]
-        public async Task<IActionResult> UpdateMember(int id, [FromBody] KitabhChautari.Dto.MemberDto dto) // Corrected namespace
-        {
-            try
-            {
-                await _adminService.UpdateMember(id, dto);
-                return NoContent();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _adminService.MemberExists(id))
-                    return NotFound();
-                throw;
-            }
-        }
-
-        [HttpDelete("members/{id}")]
-        public async Task<IActionResult> DeleteMember(int id)
-        {
-            try
-            {
-                await _adminService.DeleteMember(id);
-                return NoContent();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-        }
-
-        // ---------------- STAFF ----------------
-        [HttpGet("staff")]
-        public async Task<ActionResult<IEnumerable<Staff>>> GetStaff()
-            => Ok(await _adminService.GetAllStaff());
-
-        [HttpGet("staff/{id}")]
-        public async Task<ActionResult<Staff>> GetStaff(int id)
-        {
-            try
-            {
-                var staff = await _adminService.GetStaffById(id);
-                return Ok(staff);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpPost("staff")]
-        public async Task<ActionResult<Staff>> PostStaff(StaffDto dto)
-        {
-            try
-            {
-                var created = await _adminService.CreateStaff(dto);
-                return CreatedAtAction(nameof(GetStaff), new { id = created.StaffId }, created);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("staff/{id}")]
-        public async Task<IActionResult> UpdateStaff(int id, StaffDto dto)
-        {
-            try
-            {
-                await _adminService.UpdateStaff(id, dto);
-                return NoContent();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _adminService.StaffExists(id))
-                    return NotFound();
-                throw;
-            }
-        }
-
-        [HttpDelete("staff/{id}")]
-        public async Task<IActionResult> DeleteStaff(int id)
-        {
-            try
-            {
-                await _adminService.DeleteStaff(id);
-                return NoContent();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-        }
+       
 
   
 
     }
 }
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
+

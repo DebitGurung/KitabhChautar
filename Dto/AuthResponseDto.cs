@@ -1,4 +1,4 @@
-﻿namespace kitabhChautari.Dto
+﻿namespace kitabhChauta.Dto
 {
     public class AuthResponseDto
     {

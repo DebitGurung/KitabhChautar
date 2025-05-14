@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace kitabhChautari.Services
+namespace kitabhChauta.Services
 {
     public interface IJwtService
     {

@@ -5,7 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace kitabhChautari.Services
+namespace kitabhChauta.Services
 {
     public class JwtService : IJwtService
     {

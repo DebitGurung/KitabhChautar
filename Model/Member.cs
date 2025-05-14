@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 
 
-namespace kitabhChautari.Models
+namespace kitabhChauta.Models
 {
 
     public class Member

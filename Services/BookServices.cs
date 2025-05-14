@@ -1,6 +1,6 @@
 ﻿using KitabhChauta.Interfaces;
 using KitabhChauta.Model;
-using kitabhChautari.Data;
+using kitabhChauta.DbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace KitabhChauta.Services

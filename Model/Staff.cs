@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace kitabhChautari.Models
+namespace kitabhChauta.Models
 {
     public class Staff
     {

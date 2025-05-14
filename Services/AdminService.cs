@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using KitabhChautari;
-using BCrypt.Net;
+﻿using Microsoft.EntityFrameworkCore;
 using KitabhChautari.Dto;
-
+using kitabhChauta.Models;
+using kitabhChauta.DbContext;
 
 namespace KitabhChautari.Services
 {
@@ -164,6 +159,26 @@ namespace KitabhChautari.Services
         }
 
         public Task<bool> MemberExists(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<Admin>> IAdminService.GetAllAdmins(int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Admin> IAdminService.GetAdminById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Admin> IAdminService.CreateAdmin(AdminDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Admin> IAdminService.AuthenticateAdmin(string email, string password)
         {
             throw new NotImplementedException();
         }

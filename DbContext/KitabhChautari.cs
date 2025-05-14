@@ -1,11 +1,11 @@
 using KitabhChauta.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using kitabhChautari.Models;
+using kitabhChauta.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 
-namespace kitabhChautari.Data
+namespace kitabhChauta.DbContext
 {
     public class KitabhChautariDbContext : IdentityDbContext<IdentityUser>
     {
@@ -37,7 +37,7 @@ namespace kitabhChautari.Data
             {
                 entity.Property(b => b.ISBN)
                     .IsRequired()
-                    .HasMaxLength(17); // Increased to 17 to accommodate ISBN-13 with hyphens
+                    .HasMaxLength(17);
 
                 entity.Property(b => b.Price)
                     .HasColumnType("decimal(18,2)");

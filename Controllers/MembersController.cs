@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using KitabhChautari.Dto;
 using KitabhChautari.Services;
-using kitabhChautari.Models;
+using kitabhChauta.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

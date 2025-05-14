@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace kitabhChautari.Dto
+namespace kitabhChauta.Dto
 {
     public class UserRegisterDto
     {

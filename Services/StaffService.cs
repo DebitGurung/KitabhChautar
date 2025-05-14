@@ -1,7 +1,7 @@
 ﻿using KitabhChautari.Dto;
 using KitabhChautari.Services;
-using kitabhChautari.Data;
-using kitabhChautari.Models;
+using kitabhChauta.DbContext;
+using kitabhChauta.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;

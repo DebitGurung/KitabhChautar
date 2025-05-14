@@ -1,15 +1,15 @@
 using System.Text.Json.Serialization;
-using kitabhChautari.Services;
+using kitabhChauta.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using kitabhChautari.Models;
+using kitabhChauta.Models;
 using KitabhChautari.Services;
 using System.Text.Json;
-using kitabhChautari.Data;
+using kitabhChauta.DbContext;
 
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);

@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using kitabhChautari.Data;
+using kitabhChauta.DbContext;
 using KitabhChautari.Dto;
-using kitabhChautari.Models;
+using kitabhChauta.Models;
 using KitabhChautari.Services;
-using Microsoft.Extensions.Logging;
-using KitabhChautari.Enums;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using kitabhChautari.Dto;
-using kitabhChautari.Services;
+using kitabhChauta.Dto;
+using kitabhChauta.Services;
 
-namespace kitabhChautari.Controllers
+namespace kitabhChauta.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -105,7 +102,6 @@ namespace kitabhChautari.Controllers
                     ContactNo = model.ContactNo.Trim(),
                     Email = model.Email?.Trim().ToLower(),
                     DateOfBirth = model.DateOfBirth,
-                    MembershipStatus = model.MembershipStatus,
                     RegistrationDate = DateTime.UtcNow
                 };
 
@@ -203,7 +199,6 @@ namespace kitabhChautari.Controllers
                     Email = model.Email,
                     IsStaff = true,
                     DateOfBirth = null,
-                    MembershipStatus = MembershipStatus.Active,
                     RegistrationDate = DateTime.UtcNow
                 });
 
