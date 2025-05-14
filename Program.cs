@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using KitabhChauta.Services;
 using KitabhChauta.Interfaces;
+using KitabhChauta.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,9 @@ builder.Services.AddDbContext<KitabhChautariDbContext>(
 
 // Register services
 builder.Services.AddScoped<IAuthorService, AuthorService>();
-
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
@@ -33,7 +36,11 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+
 var app = builder.Build();
+// Add this line to register BookService with the DI container
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
