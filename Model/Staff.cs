@@ -19,9 +19,9 @@ namespace kitabhChautari.Models
         [MaxLength(256)]
         public string Email { get; set; } = string.Empty;
 
-<<<<<<< HEAD
 
-=======
+
+
         [Required]
         [Phone]
         [MaxLength(20)]
@@ -31,5 +31,5 @@ namespace kitabhChautari.Models
         [MaxLength(50)]
         public string Username { get; set; } = string.Empty;
     }
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
+
 }

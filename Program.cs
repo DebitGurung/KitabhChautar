@@ -1,31 +1,19 @@
 using System.Text.Json.Serialization;
-using kitabhChautari.Data;
 using kitabhChautari.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-<<<<<<< HEAD
-using KitabhChauta.Services;
-using KitabhChauta.Interfaces;
-using KitabhChauta.Interface;
-=======
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using kitabhChautari.Models;
 using KitabhChautari.Services;
 using System.Text.Json;
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
+using kitabhChautari.Data;
 
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
-<<<<<<< HEAD
-// Add services to the container.
-builder.Services.AddControllers();
-
-// Configure Swagger for API documentation
-=======
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddControllers()
@@ -38,36 +26,8 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 builder.Services.AddEndpointsApiExplorer();
 
-<<<<<<< HEAD
-// Configure DbContext with PostgreSQL
-builder.Services.AddDbContext<KitabhChautariDbContext>(
-    options =>
-        options.UseNpgsql(
-            builder.Configuration.GetConnectionString("PostgresConnection")
-        )
-);
-
-// Register services
-builder.Services.AddScoped<IAuthorService, AuthorService>();
-builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<IGenreService, GenreService>();
-builder.Services.AddScoped<IPublisherService, PublisherService>();
-// Add CORS policy
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowBlazorApp", builder =>
-    {
-        builder.WithOrigins("https://localhost:7025")
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
-});
-
-
-=======
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Kitabh Chautari API", Version = "v1" });
@@ -108,7 +68,10 @@ builder.Services.AddSwaggerGen(c =>
 
 var connectionString = builder.Configuration.GetConnectionString("PostgresConnection")
     ?? throw new InvalidOperationException("PostgresConnection not configured");
-builder.Services.AddDbContext<KitabhChautariDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<KitabhChautariDbContext>(options =>
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+        npgsqlOptions.CommandTimeout(60))
+);
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
@@ -143,11 +106,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.FromMinutes(5)
         };
     });
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 
 var app = builder.Build();
-// Add this line to register BookService with the DI container
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -162,13 +122,6 @@ app.UseCors(policy => policy
     .AllowCredentials());
 
 app.UseHttpsRedirection();
-<<<<<<< HEAD
-app.UseCors("AllowBlazorApp");
-app.UseAuthorization();
-app.MapControllers();
-
-app.Run();
-=======
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
@@ -184,21 +137,28 @@ async Task SeedDatabase(WebApplication app)
     var context = services.GetRequiredService<KitabhChautariDbContext>();
     var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var logger = services.GetRequiredService<ILogger<Program>>();
 
     try
     {
+        logger.LogInformation("Starting database migration...");
         await context.Database.MigrateAsync();
+        logger.LogInformation("Database migration completed.");
 
         var roles = new[] { "Admin", "Staff", "User" };
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role))
+            {
+                logger.LogInformation("Creating role: {Role}", role);
                 await roleManager.CreateAsync(new IdentityRole(role));
+            }
         }
 
         var adminEmail = "admin@kitab.com";
         if (await userManager.FindByEmailAsync(adminEmail) == null)
         {
+            logger.LogInformation("Creating admin user: {Email}", adminEmail);
             var adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
             var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? "Admin@SecurePass123!";
             var result = await userManager.CreateAsync(adminUser, adminPassword);
@@ -214,6 +174,11 @@ async Task SeedDatabase(WebApplication app)
                     IsActive = true
                 });
                 await context.SaveChangesAsync();
+                logger.LogInformation("Admin user created successfully.");
+            }
+            else
+            {
+                logger.LogError("Failed to create admin user: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
 
@@ -221,6 +186,7 @@ async Task SeedDatabase(WebApplication app)
         var staffPassword = Environment.GetEnvironmentVariable("STAFF_PASSWORD") ?? "TempStaffPass123!";
         if (await userManager.FindByEmailAsync(staffEmail) == null)
         {
+            logger.LogInformation("Creating staff user: {Email}", staffEmail);
             var staff = new IdentityUser
             {
                 UserName = staffEmail,
@@ -242,13 +208,22 @@ async Task SeedDatabase(WebApplication app)
                     Username = staffEmail
                 });
                 await context.SaveChangesAsync();
+                logger.LogInformation("Staff user created successfully.");
+            }
+            else
+            {
+                logger.LogError("Failed to create staff user: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
     }
+    catch (Npgsql.NpgsqlException ex)
+    {
+        logger.LogError(ex, "Database seeding failed due to Npgsql error: {Message}", ex.Message);
+        throw;
+    }
     catch (Exception ex)
     {
-        Console.WriteLine($"Seeding failed: {ex.Message}");
+        logger.LogError(ex, "Database seeding failed: {Message}", ex.Message);
         throw;
     }
 }
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
