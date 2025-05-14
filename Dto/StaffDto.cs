@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
+namespace KitabhChautari.Dto
+{
     public class StaffDto
     {
-        public int StaffId { get; set; } // Include for PUT requests (ID in URL + body)
+        public int? StaffId { get; set; }
 
         [Required]
-        [MaxLength(100)] // Match model's [MaxLength(100)] for consistency
+        [MaxLength(100)]
         public string FirstName { get; set; } = string.Empty;
 
         [Required]
@@ -15,5 +16,16 @@
 
         [Required]
         [EmailAddress]
+        [MaxLength(256)]
         public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [Phone]
+        [MaxLength(20)]
+        public string ContactNo { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(50)]
+        public string Username { get; set; } = string.Empty;
     }
+}

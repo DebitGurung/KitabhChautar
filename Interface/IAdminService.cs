@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using KitabhChautari.Dto; // For MemberDto, StaffDto, AdminDto
+using kitabhChautari.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using KitabhChautari.Dto;
-using KitabhChautari.Dtos;
 
 namespace KitabhChautari.Services
 {
@@ -16,13 +16,6 @@ namespace KitabhChautari.Services
         Task<bool> AdminExists(int id);
         Task<Admin> AuthenticateAdmin(string email, string password);
 
-        // User CRUD
-        Task<IEnumerable<User>> GetAllUsers();
-        Task<User> GetUserById(int id);
-        Task UpdateUser(int id, UserDto dto);
-        Task DeleteUser(int id);
-        Task<bool> UserExists(int id);
-
         // Staff CRUD
         Task<IEnumerable<Staff>> GetAllStaff();
         Task<Staff> GetStaffById(int id);
@@ -34,17 +27,11 @@ namespace KitabhChautari.Services
         // Member CRUD
         Task<IEnumerable<Member>> GetAllMembers();
         Task<Member> GetMemberById(int id);
-        Task<Member> CreateMember(MemberDto dto);
-        Task UpdateMember(int id, MemberDto dto);
+        Task<Member> CreateMember(KitabhChautari.Dto.MemberDto dto);
+        Task UpdateMember(int id, KitabhChautari.Dto.MemberDto dto);
         Task DeleteMember(int id);
         Task<bool> MemberExists(int id);
 
-        // Book CRUD
-        Task<IEnumerable<Book>> GetAllBooks();
-        Task<Book> GetBookById(int id);
-        Task<Book> CreateBook(BookDto dto, int adminId);
-        Task UpdateBook(int id, BookDto dto);
-        Task DeleteBook(int id);
-        Task<bool> BookExists(int id);
+ 
     }
 }

@@ -1,87 +1,88 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using KitabhChautari.Dto;
+using KitabhChautari.Services;
+using kitabhChautari.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-[Route("api/[controller]")]
-[ApiController]
-public class MembersController : ControllerBase
+namespace KitabhChautari.Controllers
 {
-    private readonly IMemberService _memberService;
-
-    public MembersController(IMemberService memberService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MembersController : ControllerBase
     {
-        _memberService = memberService;
-    }
+        private readonly IMemberService _memberService;
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Member>>> GetMembers(int page = 1, int pageSize = 10)
-    {
-        var members = await _memberService.GetAllMembers(page, pageSize);
-        return Ok(members);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Member>> GetMember(int id)
-    {
-        var member = await _memberService.GetMemberById(id);
-        return member == null ? NotFound() : Ok(member);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<Member>> PostMember([FromBody] MemberDto memberDto)
-    {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        try
+        public MembersController(IMemberService memberService)
         {
-            var created = await _memberService.CreateMember(memberDto);
-            return CreatedAtAction(nameof(GetMember), new { id = created.MemberId }, created);
+            _memberService = memberService;
         }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutMember(int id, [FromBody] MemberDto memberDto)
-    {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        try
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Member>>> GetMembers()
         {
-            await _memberService.UpdateMember(id, memberDto);
-            return NoContent();
+            var members = await _memberService.GetAllMembers();
+            return Ok(members);
         }
-        catch (ArgumentException) { return BadRequest("ID mismatch"); }
-        catch (KeyNotFoundException) { return NotFound(); }
-        catch (InvalidOperationException ex) { return BadRequest(ex.Message); }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await _memberService.MemberExists(id)) return NotFound();
-            throw;
-        }
-    }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteMember(int id)
-    {
-        try
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Member>> GetMember(int id)
         {
-            await _memberService.DeleteMember(id);
-            return NoContent();
+            try
+            {
+                var member = await _memberService.GetMemberById(id);
+                return Ok(member);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
         }
-        catch (KeyNotFoundException) { return NotFound(); }
-    }
 
-    [HttpPost("{memberId}/books/{bookId}")]
-    public async Task<IActionResult> AssignBookToMember(int memberId, int bookId)
-    {
-        try
+        [HttpPost]
+        public async Task<ActionResult<Member>> PostMember(MemberDto dto)
         {
-            await _memberService.AssignBookToMember(memberId, bookId);
-            return NoContent();
+            try
+            {
+                var created = await _memberService.CreateMember(dto);
+                return CreatedAtAction(nameof(GetMember), new { id = created.MemberId }, created);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-        catch (KeyNotFoundException) { return NotFound(); }
-        catch (InvalidOperationException ex) { return BadRequest(ex.Message); }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutMember(int id, MemberDto dto)
+        {
+            try
+            {
+                await _memberService.UpdateMember(id, dto);
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMember(int id)
+        {
+            try
+            {
+                await _memberService.DeleteMember(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
     }
 }

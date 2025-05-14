@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using kitabhChautari.Data;
@@ -11,9 +12,11 @@ using kitabhChautari.Data;
 namespace KitabhChauta.Migrations
 {
     [DbContext(typeof(KitabhChautariDbContext))]
-    partial class KitabhChautariDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514024009_UpdateMemberIdAutoIncrement")]
+    partial class UpdateMemberIdAutoIncrement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,43 +1,41 @@
-﻿using KitabhChautari.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using KitabhChautari.Enums;
 
-
-public class MemberDto
+namespace KitabhChautari.Dto
 {
-    public int MemberId { get; set; } // Include for PUT requests (ID in URL + body)
+    public class MemberDto
+    {
+        [Required]
+        [MaxLength(50)]
+        public string FirstName { get; set; } = string.Empty;
 
-    /// <summary>
-    /// The first name of the member.
-    /// </summary>
-    [Required]
-    [MaxLength(100)]
-    [MinLength(2)]
-    public string FirstName { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string LastName { get; set; } = string.Empty;
 
-    /// <summary>
-    /// The last name of the member.
-    /// </summary>
-    [Required]
-    [MaxLength(100)]
-    [MinLength(2)]
-    public string LastName { get; set; }
+        [Required]
+        [MaxLength(256)]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
 
-    /// <summary>
-    /// The email address of the member.
-    /// </summary>
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; }
+        [Required]
+        [MaxLength(20)]
+        [Phone]
+        public string ContactNo { get; set; } = string.Empty;
 
-    /// <summary>
-    /// The date of birth of the member.
-    /// </summary>
-    [DataType(DataType.Date)]
-    public DateTime? DateOfBirth { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? DateOfBirth { get; set; }
 
-    /// <summary>
-    /// The membership status of the member.
-    /// </summary>
-    public MembershipStatus MembershipStatus { get; set; } = MembershipStatus.Active;
+        public MembershipStatus MembershipStatus { get; set; } = MembershipStatus.Active;
 
+        [Required]
+        [MinLength(12, ErrorMessage = "Password must be at least 12 characters long.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]).{12,}",
+            ErrorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.")]
+        public string Password { get; set; } = string.Empty;
+
+        [Required]
+        [Compare("Password", ErrorMessage = "Passwords do not match.")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
 }

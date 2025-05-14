@@ -1,120 +1,73 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using kitabhChautari.Models;
+using KitabhChautari.Enums;
+using Microsoft.AspNetCore.Identity;
 
-public class KitabhChautariDbContext : DbContext
+namespace kitabhChautari.Data
 {
-    public KitabhChautariDbContext(DbContextOptions<KitabhChautariDbContext> options)
-        : base(options)
+    public class KitabhChautariDbContext : IdentityDbContext<IdentityUser>
     {
-    }
-
-    public DbSet<Book> Books { get; set; } = default!;
-
-    public DbSet<Member> Members { get; set; }
-
-    public DbSet<Staff> Staffs { get; set; }
-
-    public DbSet<User> Users { get; set; }
-
-    public DbSet<Admin> Admins { get; set; }
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<Book>(entity =>
+        public KitabhChautariDbContext(DbContextOptions<KitabhChautariDbContext> options)
+            : base(options)
         {
-            entity.HasKey(b => b.BookId);
+        }
 
-            entity.Property(b => b.Title)
-                .IsRequired()
-                .HasMaxLength(200);
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<Staff> Staffs { get; set; }
 
-            entity.Property(b => b.Author)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            entity.Property(b => b.ISBN)
-                .IsRequired()
-                .HasMaxLength(13);
-
-            entity.Property(b => b.Price)
-                .HasColumnType("decimal(18,2)");
-
-            entity.Property(b => b.PublishedDate)
-                .HasConversion(
-                    v => v.ToUniversalTime(),
-                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-
-            // Optional index example
-            entity.HasIndex(b => b.ISBN);
-        });
-        // Member Configuration
-        modelBuilder.Entity<Member>(entity =>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            entity.HasKey(m => m.MemberId);
+            base.OnModelCreating(modelBuilder);
 
-            entity.Property(m => m.FirstName)
-                .IsRequired()
-                .HasMaxLength(100);
+            // Member Configuration
+            modelBuilder.Entity<Member>(entity =>
+            {
+                entity.HasKey(m => m.MemberId);
+                entity.Property(m => m.MemberId).ValueGeneratedOnAdd();
+                entity.Property(m => m.UserId).IsRequired().HasMaxLength(450);
+                entity.Property(m => m.FirstName).IsRequired().HasMaxLength(100);
+                entity.Property(m => m.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(m => m.Email).IsRequired(false).HasMaxLength(256); // Email is optional
+                entity.Property(m => m.DateOfBirth).HasColumnType("date").IsRequired(false);
+                entity.Property(m => m.RegistrationDate).HasColumnType("timestamp with time zone").HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(m => m.MembershipStatus).IsRequired().HasConversion<int>().HasDefaultValue(MembershipStatus.Active);
+                entity.Property(m => m.ContactNo).IsRequired().HasMaxLength(20);
+                entity.Property(m => m.IsStaff).HasDefaultValue(false);
+                entity.HasIndex(m => m.ContactNo).IsUnique(); // Unique index on ContactNo
+                entity.HasIndex(m => m.Email).IsUnique().HasFilter(@"""Email"" IS NOT NULL"); // PostgreSQL syntax for unique non-null emails
+                entity.HasOne<IdentityUser>()
+                    .WithOne()
+                    .HasForeignKey<Member>(m => m.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
-            entity.Property(m => m.LastName)
-                .IsRequired()
-                .HasMaxLength(100);
+            // Admin Configuration
+            modelBuilder.Entity<Admin>(entity =>
+            {
+                entity.HasKey(a => a.AdminId);
+                entity.Property(a => a.Name).IsRequired().HasMaxLength(100);
+                entity.Property(a => a.Email).IsRequired().HasMaxLength(256);
+                entity.Property(a => a.Role).IsRequired().HasMaxLength(50);
+                entity.Property(a => a.CreatedAt).HasColumnType("timestamp with time zone").HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(a => a.UpdatedAt).HasColumnType("timestamp with time zone").IsRequired(false);
+                entity.Property(a => a.IsActive).HasDefaultValue(true);
+                entity.HasIndex(a => a.Email).IsUnique();
+            });
 
-            entity.Property(m => m.Email)
-                .IsRequired();
-
-            entity.Property(m => m.DateOfBirth)
-                .HasColumnType("date");
-
-            entity.Property(m => m.RegistrationDate)
-                .IsRequired()
-                .HasConversion(
-                    v => v.ToUniversalTime(),
-                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-
-            entity.Property(m => m.MembershipStatus)
-                .IsRequired()
-                .HasConversion<int>(); // Stores enum as int (0=Active, 1=Inactive, 2=Suspended)
-
-            // Unique index on Email
-            entity.HasIndex(m => m.Email)
-                .IsUnique();
-
-           
-            // One-to-Many with Book
-            entity.HasMany(m => m.Books)
-                .WithOne(b => b.Member)
-                .HasForeignKey(b => b.MemberId)
-                .OnDelete(DeleteBehavior.SetNull); // Changed to SetNull for consistency
-        });
-
-
-        //  Admin manages many Books (one-to-many)
-        modelBuilder.Entity<Admin>()
-            .HasMany(a => a.Books)
-            .WithOne(b => b.Admin)
-            .HasForeignKey(b => b.AdminId);
-
-        // Staff manages many Books (one-to-many)
-        modelBuilder.Entity<Staff>()
-            .HasMany(s => s.Books)
-            .WithOne(b => b.Staff)
-            .HasForeignKey(b => b.StaffId);
-
-
+            // Staff Configuration
+            modelBuilder.Entity<Staff>(entity =>
+            {
+                entity.HasKey(s => s.StaffId);
+                entity.Property(s => s.FirstName).IsRequired().HasMaxLength(100);
+                entity.Property(s => s.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(s => s.Email).IsRequired().HasMaxLength(256);
+                entity.Property(s => s.ContactNo).IsRequired().HasMaxLength(20);
+                entity.Property(s => s.Username).IsRequired().HasMaxLength(50);
+                entity.HasIndex(s => s.Email).IsUnique();
+                entity.HasIndex(s => s.Username).IsUnique();
+            });
+        }
     }
-
-
-    
-
-public DbSet<Member> Member { get; set; } = default!;
-
-public DbSet<Staff> Staff { get; set; } = default!;
-
-public DbSet<User> User { get; set; } = default!;
-
-public DbSet<Admin> Admin { get; set; } = default!;
 }
