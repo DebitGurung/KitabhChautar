@@ -1,4 +1,4 @@
-﻿using KitabhChautari.Enums;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,7 +25,7 @@ public class Member
     [DataType(DataType.DateTime)]
     public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
-    public MembershipStatus MembershipStatus { get; set; } 
+
 
   
  

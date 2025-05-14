@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using KitabhChautari.Services;
-using KitabhChauta.Interfaces;
 using KitabhChauta.Services;
-using KitabhChauta.Interface;
+using KitabhChauta.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,25 +19,15 @@ builder.Services.AddDbContext<KitabhChautariDbContext>(
         )
 );
 
-// Add AutoMapper
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
-
 // Register services
-builder.Services.AddScoped<IStaffService, StaffService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IMemberService, MemberService>();
-builder.Services.AddScoped<IAdminService, AdminService>();
-builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
-builder.Services.AddScoped<IGenreService, GenreService>();
-builder.Services.AddScoped<IPublisherService, PublisherService>();
 
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorApp", builder =>
     {
-        builder.WithOrigins("https://localhost:7025") // Ensure this matches Blazor app URL
+        builder.WithOrigins("https://localhost:7025")
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
@@ -55,12 +43,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// Apply CORS policy
 app.UseCors("AllowBlazorApp");
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

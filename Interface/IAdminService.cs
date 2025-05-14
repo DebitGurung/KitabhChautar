@@ -16,12 +16,6 @@ namespace KitabhChautari.Services
         Task<bool> AdminExists(int id);
         Task<Admin> AuthenticateAdmin(string email, string password);
 
-        // User CRUD
-        Task<IEnumerable<User>> GetAllUsers();
-        Task<User> GetUserById(int id);
-        Task UpdateUser(int id, UserDto dto);
-        Task DeleteUser(int id);
-        Task<bool> UserExists(int id);
 
         // Staff CRUD
         Task<IEnumerable<Staff>> GetAllStaff();

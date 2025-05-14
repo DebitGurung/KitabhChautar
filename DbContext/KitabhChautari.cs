@@ -17,7 +17,6 @@ public class KitabhChautariDbContext : DbContext
 
     public DbSet<Staff> Staffs { get; set; }
 
-    public DbSet<User> Users { get; set; }
 
     public DbSet<Admin> Admins { get; set; }
 
@@ -26,6 +25,17 @@ public class KitabhChautariDbContext : DbContext
     public DbSet<Genre> Genres { get; set; } 
 
     public DbSet<Publisher> Publishers { get; set; }
+
+
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
+
+    public DbSet<Wishlist> Wishlists { get; set; }
+    public DbSet<WishlistItem> WishlistItems { get; set; }
+
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -79,9 +89,6 @@ public class KitabhChautariDbContext : DbContext
                     v => v.ToUniversalTime(),
                     v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
-            entity.Property(m => m.MembershipStatus)
-                .IsRequired()
-                .HasConversion<int>(); // Stores enum as int (0=Active, 1=Inactive, 2=Suspended)
 
             // Unique index on Email
             entity.HasIndex(m => m.Email)
@@ -144,10 +151,69 @@ public class KitabhChautariDbContext : DbContext
         });
 
 
+        // Cart Configuration
+        // Configure relationships
+        modelBuilder.Entity<Cart>()
+            .HasOne(c => c.Member)
+            .WithOne()
+            .HasForeignKey<Cart>(c => c.MemberId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CartItem>()
+            .HasOne(ci => ci.Cart)
+            .WithMany(c => c.CartItems)
+            .HasForeignKey(ci => ci.CartId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CartItem>()
+            .HasOne(ci => ci.Book)
+            .WithMany()
+            .HasForeignKey(ci => ci.BookId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
+        // Wishlist Configuration
+        modelBuilder.Entity<Wishlist>()
+           .HasOne(w => w.Member)
+           .WithOne()
+           .HasForeignKey<Wishlist>(w => w.MemberId)
+           .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<WishlistItem>()
+            .HasOne(wi => wi.Wishlist)
+            .WithMany(w => w.WishlistItems)
+            .HasForeignKey(wi => wi.WishlistId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<WishlistItem>()
+            .HasOne(wi => wi.Book)
+            .WithMany()
+            .HasForeignKey(wi => wi.BookId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Order Configuration
+
+        modelBuilder.Entity<Order>()
+        .HasOne(o => o.Member)
+        .WithMany()
+        .HasForeignKey(o => o.MemberId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(oi => oi.Order)
+            .WithMany(o => o.OrderItems)
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(oi => oi.Book)
+            .WithMany()
+            .HasForeignKey(oi => oi.BookId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
 
-    
+
 
 
 }

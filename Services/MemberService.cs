@@ -38,7 +38,6 @@ public class MemberService : IMemberService
             LastName = memberDto.LastName,
             Email = memberDto.Email,
             DateOfBirth = memberDto.DateOfBirth,
-            MembershipStatus = memberDto.MembershipStatus,
             RegistrationDate = DateTime.UtcNow
         };
 
@@ -60,7 +59,7 @@ public class MemberService : IMemberService
         member.LastName = memberDto.LastName;
         member.Email = memberDto.Email;
         member.DateOfBirth = memberDto.DateOfBirth;
-        member.MembershipStatus = memberDto.MembershipStatus;
+
 
         _context.Entry(member).State = EntityState.Modified;
         await SaveWithConcurrencyCheck(id);

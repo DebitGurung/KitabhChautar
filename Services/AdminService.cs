@@ -79,122 +79,7 @@ namespace KitabhChautari.Services
             return admin;
         }
 
-        // User CRUD
-        public async Task<IEnumerable<User>> GetAllUsers()
-            => await _context.Users.ToListAsync();
-
-        public async Task<User> GetUserById(int id)
-            => await _context.Users.FindAsync(id) ?? throw new KeyNotFoundException("User not found");
-
-        public async Task UpdateUser(int id, UserDto dto)
-        {
-            var user = await _context.Users.FindAsync(id)
-                ?? throw new KeyNotFoundException("User not found");
-
-            if (await _context.Users.AnyAsync(u => u.Email == dto.Email && u.UserId != id))
-                throw new InvalidOperationException("Email already exists");
-
-            user.FirstName = dto.FirstName;
-            user.LastName = dto.LastName;
-            user.Email = dto.Email;
-
-            _context.Entry(user).State = EntityState.Modified;
-            await SaveWithConcurrencyCheck<User>(id, UserExists);
-        }
-
-        public async Task DeleteUser(int id) => await DeleteEntity<User>(id);
-
-        public async Task<bool> UserExists(int id) => await EntityExists<User>(id);
-
-        // Staff CRUD
-        public async Task<IEnumerable<Staff>> GetAllStaff()
-            => await _context.Staffs.ToListAsync();
-
-        public async Task<Staff> GetStaffById(int id)
-            => await _context.Staffs.FindAsync(id) ?? throw new KeyNotFoundException("Staff not found");
-
-        public async Task<Staff> CreateStaff(StaffDto dto)
-        {
-            if (await _context.Staffs.AnyAsync(s => s.Email == dto.Email))
-                throw new InvalidOperationException("Email already exists");
-
-            var staff = new Staff
-            {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName = dto.FirstName,
-                Email = dto.Email,
-            };
-
-            _context.Staffs.Add(staff);
-            await _context.SaveChangesAsync();
-            return staff;
-        }
-
-        public async Task UpdateStaff(int id, StaffDto dto)
-        {
-            var staff = await _context.Staffs.FindAsync(id)
-                ?? throw new KeyNotFoundException("Staff not found");
-
-            if (await _context.Staffs.AnyAsync(s => s.Email == dto.Email && s.StaffId != id))
-                throw new InvalidOperationException("Email already exists");
-
-            staff.FirstName = dto.FirstName;
-            staff.LastName = dto.LastName;
-            staff.Email = dto.Email;
-
-            _context.Entry(staff).State = EntityState.Modified;
-            await SaveWithConcurrencyCheck<Staff>(id, StaffExists);
-        }
-
-        public async Task DeleteStaff(int id) => await DeleteEntity<Staff>(id);
-
-        public async Task<bool> StaffExists(int id) => await EntityExists<Staff>(id);
-
-        // Member CRUD
-        public async Task<IEnumerable<Member>> GetAllMembers()
-            => await _context.Members.ToListAsync();
-
-        public async Task<Member> GetMemberById(int id)
-            => await _context.Members.FindAsync(id) ?? throw new KeyNotFoundException("Member not found");
-
-        public async Task<Member> CreateMember(MemberDto dto)
-        {
-            if (await _context.Members.AnyAsync(m => m.Email == dto.Email))
-                throw new InvalidOperationException("Email already exists");
-
-            var member = new Member
-            {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName = dto.FirstName,
-                Email = dto.Email,
-            };
-
-            _context.Members.Add(member);
-            await _context.SaveChangesAsync();
-            return member;
-        }
-
-        public async Task UpdateMember(int id, MemberDto dto)
-        {
-            var member = await _context.Members.FindAsync(id)
-                ?? throw new KeyNotFoundException("Member not found");
-
-            if (await _context.Members.AnyAsync(m => m.Email == dto.Email && m.MemberId != id))
-                throw new InvalidOperationException("Email already exists");
-
-            member.FirstName = dto.FirstName;
-            member.LastName = dto.LastName;
-
-            member.Email = dto.Email;
-
-            _context.Entry(member).State = EntityState.Modified;
-            await SaveWithConcurrencyCheck<Member>(id, MemberExists);
-        }
-
-        public async Task DeleteMember(int id) => await DeleteEntity<Member>(id);
-
-        public async Task<bool> MemberExists(int id) => await EntityExists<Member>(id);
-
+       
         
 
         // Generic Helpers
@@ -221,6 +106,66 @@ namespace KitabhChautari.Services
                     throw new KeyNotFoundException($"{typeof(T).Name} not found");
                 throw;
             }
+        }
+
+        public Task<IEnumerable<Staff>> GetAllStaff()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Staff> GetStaffById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Staff> CreateStaff(StaffDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateStaff(int id, StaffDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteStaff(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> StaffExists(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Member>> GetAllMembers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Member> GetMemberById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Member> CreateMember(MemberDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateMember(int id, MemberDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteMember(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> MemberExists(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using KitabhChautari.Enums;
+﻿
 using System.ComponentModel.DataAnnotations;
 
 
@@ -35,9 +35,6 @@ public class MemberDto
     [DataType(DataType.Date)]
     public DateTime? DateOfBirth { get; set; }
 
-    /// <summary>
-    /// The membership status of the member.
-    /// </summary>
-    public MembershipStatus MembershipStatus { get; set; } = MembershipStatus.Active;
+
 
 }
