@@ -1,14 +1,22 @@
+<<<<<<< HEAD
 ﻿using KitabhChauta.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+=======
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using kitabhChautari.Models;
+using KitabhChautari.Enums;
+using Microsoft.AspNetCore.Identity;
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 
-public class KitabhChautariDbContext : DbContext
+namespace kitabhChautari.Data
 {
-    public KitabhChautariDbContext(DbContextOptions<KitabhChautariDbContext> options)
-        : base(options)
+    public class KitabhChautariDbContext : IdentityDbContext<IdentityUser>
     {
+<<<<<<< HEAD
     }
 
     public DbSet<Book> Books { get; set; } = default!;
@@ -41,13 +49,18 @@ public class KitabhChautariDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Book>(entity =>
+=======
+        public KitabhChautariDbContext(DbContextOptions<KitabhChautariDbContext> options)
+            : base(options)
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
         {
-            entity.HasKey(b => b.BookId);
+        }
 
-            entity.Property(b => b.Title)
-                .IsRequired()
-                .HasMaxLength(200);
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<Staff> Staffs { get; set; }
 
+<<<<<<< HEAD
 
             entity.Property(b => b.ISBN)
                 .IsRequired()
@@ -66,9 +79,13 @@ public class KitabhChautariDbContext : DbContext
         });
         // Member Configuration
         modelBuilder.Entity<Member>(entity =>
+=======
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
         {
-            entity.HasKey(m => m.MemberId);
+            base.OnModelCreating(modelBuilder);
 
+<<<<<<< HEAD
             entity.Property(m => m.FirstName)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -149,8 +166,44 @@ public class KitabhChautariDbContext : DbContext
                 .HasForeignKey(b => b.Publisher_id)
                 .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete
         });
+=======
+            // Member Configuration
+            modelBuilder.Entity<Member>(entity =>
+            {
+                entity.HasKey(m => m.MemberId);
+                entity.Property(m => m.MemberId).ValueGeneratedOnAdd();
+                entity.Property(m => m.UserId).IsRequired().HasMaxLength(450);
+                entity.Property(m => m.FirstName).IsRequired().HasMaxLength(100);
+                entity.Property(m => m.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(m => m.Email).IsRequired(false).HasMaxLength(256); // Email is optional
+                entity.Property(m => m.DateOfBirth).HasColumnType("date").IsRequired(false);
+                entity.Property(m => m.RegistrationDate).HasColumnType("timestamp with time zone").HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(m => m.MembershipStatus).IsRequired().HasConversion<int>().HasDefaultValue(MembershipStatus.Active);
+                entity.Property(m => m.ContactNo).IsRequired().HasMaxLength(20);
+                entity.Property(m => m.IsStaff).HasDefaultValue(false);
+                entity.HasIndex(m => m.ContactNo).IsUnique(); // Unique index on ContactNo
+                entity.HasIndex(m => m.Email).IsUnique().HasFilter(@"""Email"" IS NOT NULL"); // PostgreSQL syntax for unique non-null emails
+                entity.HasOne<IdentityUser>()
+                    .WithOne()
+                    .HasForeignKey<Member>(m => m.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 
+            // Admin Configuration
+            modelBuilder.Entity<Admin>(entity =>
+            {
+                entity.HasKey(a => a.AdminId);
+                entity.Property(a => a.Name).IsRequired().HasMaxLength(100);
+                entity.Property(a => a.Email).IsRequired().HasMaxLength(256);
+                entity.Property(a => a.Role).IsRequired().HasMaxLength(50);
+                entity.Property(a => a.CreatedAt).HasColumnType("timestamp with time zone").HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(a => a.UpdatedAt).HasColumnType("timestamp with time zone").IsRequired(false);
+                entity.Property(a => a.IsActive).HasDefaultValue(true);
+                entity.HasIndex(a => a.Email).IsUnique();
+            });
 
+<<<<<<< HEAD
         // Cart Configuration
         // Configure relationships
         modelBuilder.Entity<Cart>()
@@ -216,4 +269,20 @@ public class KitabhChautariDbContext : DbContext
 
 
 
+=======
+            // Staff Configuration
+            modelBuilder.Entity<Staff>(entity =>
+            {
+                entity.HasKey(s => s.StaffId);
+                entity.Property(s => s.FirstName).IsRequired().HasMaxLength(100);
+                entity.Property(s => s.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(s => s.Email).IsRequired().HasMaxLength(256);
+                entity.Property(s => s.ContactNo).IsRequired().HasMaxLength(20);
+                entity.Property(s => s.Username).IsRequired().HasMaxLength(50);
+                entity.HasIndex(s => s.Email).IsUnique();
+                entity.HasIndex(s => s.Username).IsUnique();
+            });
+        }
+    }
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 }

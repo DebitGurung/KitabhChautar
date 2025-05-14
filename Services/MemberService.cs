@@ -1,38 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using KitabhChautari.Dto;
+using KitabhChautari.Services;
+using kitabhChautari.Data;
+using kitabhChautari.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-public class MemberService : IMemberService
+
+namespace KitabhChautari.Services
 {
-    private readonly KitabhChautariDbContext _context;
-
-    public MemberService(KitabhChautariDbContext context)
+    public class MemberService : IMemberService
     {
-        _context = context;
-    }
+        private readonly KitabhChautariDbContext _context;
 
-    public async Task<IEnumerable<Member>> GetAllMembers(int page = 1, int pageSize = 10)
-        => await _context.Members
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-    public async Task<Member> GetMemberById(int id)
-        => await _context.Members.FindAsync(id) ?? throw new KeyNotFoundException("Member not found");
-
-    public async Task<Member> CreateMember(MemberDto memberDto)
-    {
-        if (await _context.Members.AnyAsync(m => m.Email == memberDto.Email))
-            throw new InvalidOperationException("Email already exists");
-
-        if (await _context.Members.AnyAsync(m => m.MemberId == memberDto.MemberId))
-            throw new InvalidOperationException("Member already exists");
-
-
-
-        var member = new Member
+        public MemberService(KitabhChautariDbContext context)
         {
+<<<<<<< HEAD
             MemberId = memberDto.MemberId,
             FirstName = memberDto.FirstName,
             LastName = memberDto.LastName,
@@ -40,17 +22,18 @@ public class MemberService : IMemberService
             DateOfBirth = memberDto.DateOfBirth,
             RegistrationDate = DateTime.UtcNow
         };
+=======
+            _context = context;
+        }
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 
-        _context.Members.Add(member);
-        await _context.SaveChangesAsync();
-        return member;
-    }
+        public async Task<IEnumerable<Member>> GetAllMembers()
+            => await _context.Members.ToListAsync();
 
-    public async Task UpdateMember(int id, MemberDto memberDto)
-    {
-        var member = await _context.Members.FindAsync(id)
-            ?? throw new KeyNotFoundException("Member not found");
+        public async Task<Member> GetMemberById(int id)
+            => await _context.Members.FindAsync(id) ?? throw new KeyNotFoundException("Member not found");
 
+<<<<<<< HEAD
         if (await _context.Members.AnyAsync(m => m.Email == memberDto.Email && m.MemberId != id))
             throw new InvalidOperationException("Email already exists");
 
@@ -81,14 +64,48 @@ public class MemberService : IMemberService
     private async Task SaveWithConcurrencyCheck(int id)
     {
         try
+=======
+        public async Task<Member> CreateMember(MemberDto dto)
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
         {
+            var member = new Member
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                ContactNo = dto.ContactNo,
+                DateOfBirth = dto.DateOfBirth,
+                MembershipStatus = dto.MembershipStatus
+            };
+
+            _context.Members.Add(member);
+            await _context.SaveChangesAsync();
+            return member;
+        }
+
+        public async Task UpdateMember(int id, MemberDto dto)
+        {
+            var member = await _context.Members.FindAsync(id)
+                ?? throw new KeyNotFoundException("Member not found");
+
+            member.FirstName = dto.FirstName;
+            member.LastName = dto.LastName;
+            member.ContactNo = dto.ContactNo;
+            member.DateOfBirth = dto.DateOfBirth;
+            member.MembershipStatus = dto.MembershipStatus;
+
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateConcurrencyException)
+
+        public async Task DeleteMember(int id)
         {
-            if (!await MemberExists(id)) throw new KeyNotFoundException("Member not found");
-            throw;
+            var member = await _context.Members.FindAsync(id)
+                ?? throw new KeyNotFoundException("Member not found");
+            _context.Members.Remove(member);
+            await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> MemberExists(int id)
+            => await _context.Members.AnyAsync(m => m.MemberId == id);
     }
 
     public Task AssignBookToMember(int memberId, int bookId)

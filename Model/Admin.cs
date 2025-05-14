@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-public class Admin
+﻿namespace kitabhChautari.Models
 {
+<<<<<<< HEAD
     public int AdminId { get; set; }
 
     [Required]
@@ -31,4 +29,16 @@ public class Admin
     public bool IsActive { get; set; } = true;
 
 
+=======
+    public class Admin
+    {
+        public int AdminId { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public bool IsActive { get; set; }
+    }
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 }

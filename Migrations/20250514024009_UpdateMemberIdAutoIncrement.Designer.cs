@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using kitabhChautari.Data;
@@ -11,9 +12,11 @@ using kitabhChautari.Data;
 namespace KitabhChauta.Migrations
 {
     [DbContext(typeof(KitabhChautariDbContext))]
-    partial class KitabhChautariDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514024009_UpdateMemberIdAutoIncrement")]
+    partial class UpdateMemberIdAutoIncrement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,284 +259,6 @@ namespace KitabhChauta.Migrations
 
                     b.HasKey("AdminId");
 
-<<<<<<< HEAD
-                    b.ToTable("Admins");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Author", b =>
-                {
-                    b.Property<int>("Author_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Author_id"));
-
-                    b.Property<string>("Author_Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Author_id");
-
-                    b.ToTable("Authors");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Book", b =>
-                {
-                    b.Property<int>("BookId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BookId"));
-
-                    b.Property<int>("Author_id")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("Category")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CoverImageUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal?>("DiscountPercentage")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("Genre_id")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ISBN")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("character varying(13)");
-
-                    b.Property<bool>("IsOnSale")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Pages")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("PublishedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Publisher_id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StockCount")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Synopsis")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.HasKey("BookId");
-
-                    b.HasIndex("Author_id");
-
-                    b.HasIndex("Genre_id");
-
-                    b.HasIndex("ISBN");
-
-                    b.HasIndex("Publisher_id");
-
-                    b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Cart", b =>
-                {
-                    b.Property<int>("CartId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
-
-                    b.Property<int>("MemberId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CartId");
-
-                    b.HasIndex("MemberId")
-                        .IsUnique();
-
-                    b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.CartItem", b =>
-                {
-                    b.Property<int>("CartItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartItemId"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CartItemId");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("CartId");
-
-                    b.ToTable("CartItems");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Genre", b =>
-                {
-                    b.Property<int>("Genre_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Genre_id"));
-
-                    b.Property<string>("Genre_Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Genre_id");
-
-                    b.ToTable("Genres");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Order", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderId"));
-
-                    b.Property<DateTime?>("CancellationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsCanceled")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("MemberId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("MemberId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.OrderItem", b =>
-                {
-                    b.Property<int>("OrderItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderItemId"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("OrderItemId");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Publisher", b =>
-                {
-                    b.Property<int>("Publisher_id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Publisher_id"));
-
-                    b.Property<string>("Publisher_Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Publisher_id");
-
-                    b.ToTable("Publishers");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Wishlist", b =>
-                {
-                    b.Property<int>("WishlistId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("WishlistId"));
-
-                    b.Property<int>("MemberId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("WishlistId");
-
-                    b.HasIndex("MemberId")
-                        .IsUnique();
-
-                    b.ToTable("Wishlists");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.WishlistItem", b =>
-                {
-                    b.Property<int>("WishlistItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("WishlistItemId"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("WishlistId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("WishlistItemId");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("WishlistId");
-
-                    b.ToTable("WishlistItems");
-                });
-
-            modelBuilder.Entity("Member", b =>
-=======
                     b.HasIndex("Email")
                         .IsUnique();
 
@@ -541,7 +266,6 @@ namespace KitabhChauta.Migrations
                 });
 
             modelBuilder.Entity("kitabhChautari.Models.Member", b =>
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
                 {
                     b.Property<int>("MemberId")
                         .ValueGeneratedOnAdd()
@@ -576,34 +300,26 @@ namespace KitabhChauta.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-<<<<<<< HEAD
-=======
                     b.Property<int>("MembershipStatus")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
 
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
                     b.Property<DateTime>("RegistrationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-<<<<<<< HEAD
-=======
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
                     b.HasKey("MemberId");
 
                     b.HasIndex("ContactNo")
                         .IsUnique();
 
-<<<<<<< HEAD
-=======
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasFilter("\"Email\" IS NOT NULL");
@@ -611,7 +327,6 @@ namespace KitabhChauta.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
                     b.ToTable("Members");
                 });
 
@@ -650,129 +365,6 @@ namespace KitabhChauta.Migrations
 
                     b.HasKey("StaffId");
 
-<<<<<<< HEAD
-                    b.ToTable("Staffs");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Book", b =>
-                {
-                    b.HasOne("KitabhChauta.Model.Author", "Author")
-                        .WithMany("Books")
-                        .HasForeignKey("Author_id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("KitabhChauta.Model.Genre", "Genre")
-                        .WithMany("Books")
-                        .HasForeignKey("Genre_id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("KitabhChauta.Model.Publisher", "Publisher")
-                        .WithMany("Books")
-                        .HasForeignKey("Publisher_id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Genre");
-
-                    b.Navigation("Publisher");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Cart", b =>
-                {
-                    b.HasOne("Member", "Member")
-                        .WithOne()
-                        .HasForeignKey("KitabhChauta.Model.Cart", "MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.CartItem", b =>
-                {
-                    b.HasOne("KitabhChauta.Model.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("KitabhChauta.Model.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Cart");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Order", b =>
-                {
-                    b.HasOne("Member", "Member")
-                        .WithMany()
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.OrderItem", b =>
-                {
-                    b.HasOne("KitabhChauta.Model.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("KitabhChauta.Model.Order", "Order")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Wishlist", b =>
-                {
-                    b.HasOne("Member", "Member")
-                        .WithOne()
-                        .HasForeignKey("KitabhChauta.Model.Wishlist", "MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.WishlistItem", b =>
-                {
-                    b.HasOne("KitabhChauta.Model.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("KitabhChauta.Model.Wishlist", "Wishlist")
-                        .WithMany("WishlistItems")
-                        .HasForeignKey("WishlistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Wishlist");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Author", b =>
-=======
                     b.HasIndex("Email")
                         .IsUnique();
 
@@ -801,7 +393,6 @@ namespace KitabhChauta.Migrations
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
@@ -810,16 +401,7 @@ namespace KitabhChauta.Migrations
                         .IsRequired();
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("KitabhChauta.Model.Cart", b =>
-                {
-                    b.Navigation("CartItems");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Genre", b =>
-=======
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
@@ -834,16 +416,7 @@ namespace KitabhChauta.Migrations
                         .IsRequired();
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("KitabhChauta.Model.Order", b =>
-                {
-                    b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Publisher", b =>
-=======
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
->>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
@@ -859,11 +432,6 @@ namespace KitabhChauta.Migrations
                         .HasForeignKey("kitabhChautari.Models.Member", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("KitabhChauta.Model.Wishlist", b =>
-                {
-                    b.Navigation("WishlistItems");
                 });
 #pragma warning restore 612, 618
         }

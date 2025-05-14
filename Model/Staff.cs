@@ -1,21 +1,35 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 
-public class Staff
+namespace kitabhChautari.Models
 {
-    public int StaffId { get; set; }
+    public class Staff
+    {
+        public int StaffId { get; set; }
 
-    [Required]
-    [MaxLength(100)]
-    public string FirstName { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(100)]
+        public string FirstName { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(100)]
-    public string LastName { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(100)]
+        public string LastName { get; set; } = string.Empty;
 
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; } = string.Empty;
+        [Required]
+        [EmailAddress]
+        [MaxLength(256)]
+        public string Email { get; set; } = string.Empty;
 
+<<<<<<< HEAD
 
+=======
+        [Required]
+        [Phone]
+        [MaxLength(20)]
+        public string ContactNo { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(50)]
+        public string Username { get; set; } = string.Empty;
+    }
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 }

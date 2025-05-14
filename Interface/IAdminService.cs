@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using KitabhChautari.Dto; // For MemberDto, StaffDto, AdminDto
+using kitabhChautari.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+<<<<<<< HEAD
 using KitabhChautari.Dto;
 
+=======
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 
 namespace KitabhChautari.Services
 {
@@ -16,7 +21,10 @@ namespace KitabhChautari.Services
         Task<bool> AdminExists(int id);
         Task<Admin> AuthenticateAdmin(string email, string password);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
         // Staff CRUD
         Task<IEnumerable<Staff>> GetAllStaff();
         Task<Staff> GetStaffById(int id);
@@ -28,11 +36,15 @@ namespace KitabhChautari.Services
         // Member CRUD
         Task<IEnumerable<Member>> GetAllMembers();
         Task<Member> GetMemberById(int id);
-        Task<Member> CreateMember(MemberDto dto);
-        Task UpdateMember(int id, MemberDto dto);
+        Task<Member> CreateMember(KitabhChautari.Dto.MemberDto dto);
+        Task UpdateMember(int id, KitabhChautari.Dto.MemberDto dto);
         Task DeleteMember(int id);
         Task<bool> MemberExists(int id);
 
+<<<<<<< HEAD
         
+=======
+ 
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
     }
 }

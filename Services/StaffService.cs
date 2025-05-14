@@ -1,9 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KitabhChautari.Dto;
+using KitabhChautari.Services;
+using kitabhChautari.Data;
+using kitabhChautari.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 
+namespace KitabhChautari.Services
+{
     public class StaffService : IStaffService
     {
         private readonly KitabhChautariDbContext _context;
@@ -17,8 +21,7 @@ using System.Threading.Tasks;
             => await _context.Staffs.ToListAsync();
 
         public async Task<Staff> GetStaffById(int id)
-            => await _context.Staffs.FindAsync(id)
-               ?? throw new KeyNotFoundException("Staff not found");
+            => await _context.Staffs.FindAsync(id) ?? throw new KeyNotFoundException("Staff not found");
 
         public async Task<Staff> CreateStaff(StaffDto dto)
         {
@@ -29,7 +32,9 @@ using System.Threading.Tasks;
             {
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
-                Email = dto.Email
+                Email = dto.Email,
+                ContactNo = dto.ContactNo,
+                Username = dto.Username
             };
 
             _context.Staffs.Add(staff);
@@ -48,8 +53,9 @@ using System.Threading.Tasks;
             staff.FirstName = dto.FirstName;
             staff.LastName = dto.LastName;
             staff.Email = dto.Email;
+            staff.ContactNo = dto.ContactNo;
+            staff.Username = dto.Username;
 
-            _context.Entry(staff).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
@@ -57,7 +63,6 @@ using System.Threading.Tasks;
         {
             var staff = await _context.Staffs.FindAsync(id)
                 ?? throw new KeyNotFoundException("Staff not found");
-
             _context.Staffs.Remove(staff);
             await _context.SaveChangesAsync();
         }
@@ -65,3 +70,4 @@ using System.Threading.Tasks;
         public async Task<bool> StaffExists(int id)
             => await _context.Staffs.AnyAsync(s => s.StaffId == id);
     }
+}

@@ -1,10 +1,14 @@
+<<<<<<< HEAD
 ﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+=======
+﻿using KitabhChautari.Enums;
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94
 
-[Table("Members")] // Explicitly map to the "Members" table
-public class Member
+namespace kitabhChautari.Models
 {
+<<<<<<< HEAD
     public int MemberId { get; set; }
 
     [Required]
@@ -31,3 +35,19 @@ public class Member
  
 }
 
+=======
+    public class Member
+    {
+        public int MemberId { get; set; }
+        public string UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string? Email { get; set; } // Made nullable
+        public DateTime? DateOfBirth { get; set; }
+        public DateTime RegistrationDate { get; set; }
+        public MembershipStatus MembershipStatus { get; set; }
+        public string ContactNo { get; set; }
+        public bool IsStaff { get; set; }
+    }
+}
+>>>>>>> f5451a52d1c4c87b33f69c61b45926a525e29c94

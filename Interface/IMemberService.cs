@@ -1,10 +1,17 @@
-﻿public interface IMemberService
+﻿using KitabhChautari.Dto;
+using kitabhChautari.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace KitabhChautari.Services
 {
-    Task<IEnumerable<Member>> GetAllMembers(int page = 1, int pageSize = 10);
-    Task<Member> GetMemberById(int id);
-    Task<Member> CreateMember(MemberDto memberDto);
-    Task UpdateMember(int id, MemberDto memberDto);
-    Task DeleteMember(int id);
-    Task<bool> MemberExists(int id);
-    Task AssignBookToMember(int memberId, int bookId);
+    public interface IMemberService
+    {
+        Task<IEnumerable<Member>> GetAllMembers();
+        Task<Member> GetMemberById(int id);
+        Task<Member> CreateMember(MemberDto dto);
+        Task UpdateMember(int id, MemberDto dto);
+        Task DeleteMember(int id);
+        Task<bool> MemberExists(int id);
+    }
 }
