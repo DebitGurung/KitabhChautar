@@ -86,7 +86,7 @@ namespace kitabhChauta.Controllers
                     return BadRequest(new { Errors = result.Errors });
                 }
 
-                const string userRole = "User";
+                const string userRole = "Member";
                 if (!await _roleManager.RoleExistsAsync(userRole))
                 {
                     await _roleManager.CreateAsync(new IdentityRole(userRole));
@@ -141,7 +141,7 @@ namespace kitabhChauta.Controllers
             return Ok(new AuthResponseDto
             {
                 Token = token,
-                Role = roles.FirstOrDefault() ?? "User"
+                Role = roles.FirstOrDefault() ?? "Member"
             });
         }
 

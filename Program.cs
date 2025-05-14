@@ -10,6 +10,9 @@ using kitabhChauta.Models;
 using KitabhChautari.Services;
 using System.Text.Json;
 using kitabhChauta.DbContext;
+using KitabhChauta.Services;
+using KitabhChauta.Interfaces;
+using KitabhChauta.Interface;
 
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +29,18 @@ builder.Services.AddControllers()
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IStaffService, StaffService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IAdminService,AdminService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IWishlistService, WishlistService>(); 
+builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -116,7 +131,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(policy => policy
-    .WithOrigins("https://localhost:7092", "http://localhost:5092")
+    .WithOrigins("https://localhost:7025", "http://localhost:5092")
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());
@@ -145,7 +160,7 @@ async Task SeedDatabase(WebApplication app)
         await context.Database.MigrateAsync();
         logger.LogInformation("Database migration completed.");
 
-        var roles = new[] { "Admin", "Staff", "User" };
+        var roles = new[] { "Admin", "Staff", "Member" };
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role))
