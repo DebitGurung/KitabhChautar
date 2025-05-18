@@ -1,6 +1,7 @@
 ﻿using KitabhChauta.Interfaces;
 using KitabhChauta.Model;
 using KitabhChauta.Dto;
+using kitabhChauta.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,9 +19,13 @@ namespace KitabhChauta.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BookDTO>>> GetBooks()
+        public async Task<ActionResult<IEnumerable<BookDTO>>> GetBooks(
+            [FromQuery] int? genreId = null,
+            [FromQuery] int? authorId = null,
+            [FromQuery] int? publisherId = null,
+            [FromQuery] string? category = null)
         {
-            var books = await _bookService.GetAllBooksAsync();
+            var books = await _bookService.GetFilteredBooksAsync(genreId, authorId, publisherId, category);
             var bookDtos = books.Select(b => new BookDTO
             {
                 BookId = b.BookId,
@@ -215,6 +220,8 @@ namespace KitabhChauta.Controllers
 
             return NoContent();
         }
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)

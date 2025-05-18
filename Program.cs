@@ -1,20 +1,21 @@
 using System.Text.Json.Serialization;
-using kitabhChauta.Services;
+using KitabhChautari.Services; // Standardized namespace
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using kitabhChauta.Models;
-using KitabhChautari.Services;
-using System.Text.Json;
+using DotNetEnv;
 using kitabhChauta.DbContext;
-using KitabhChauta.Services;
-using KitabhChauta.Interfaces;
 using KitabhChauta.Interface;
+using KitabhChauta.Interfaces;
+using kitabhChauta.Models;
+using kitabhChauta.Services;
+using KitabhChauta.Services;
+using System.Text.Json;
 
-DotNetEnv.Env.Load();
+Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
@@ -27,20 +28,19 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
+// Register services (removed duplicates)
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<IAdminService,AdminService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IWishlistService, WishlistService>(); 
-builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IWishlistService, WishlistService>();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -81,7 +81,8 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 
-var connectionString = builder.Configuration.GetConnectionString("PostgresConnection")
+var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING")
+    ?? builder.Configuration.GetConnectionString("PostgresConnection")
     ?? throw new InvalidOperationException("PostgresConnection not configured");
 builder.Services.AddDbContext<KitabhChautariDbContext>(options =>
     options.UseNpgsql(connectionString, npgsqlOptions =>
@@ -102,7 +103,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<KitabhChautariDbContext>()
     .AddDefaultTokenProviders();
 
-var jwtSecret = builder.Configuration["JWT_SECRET"] ?? throw new InvalidOperationException("JWT_SECRET not set in configuration");
+var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET")
+    ?? builder.Configuration["Jwt:Key"]
+    ?? throw new InvalidOperationException("Jwt:Key not set in configuration");
 var key = Encoding.UTF8.GetBytes(jwtSecret);
 var expireHours = double.Parse(builder.Configuration["Jwt:ExpireHours"] ?? "8");
 
@@ -131,7 +134,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(policy => policy
-    .WithOrigins("https://localhost:7025", "http://localhost:5092")
+    .WithOrigins("https://localhost:7171") // Updated to match Swagger URL
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());
@@ -175,7 +178,8 @@ async Task SeedDatabase(WebApplication app)
         {
             logger.LogInformation("Creating admin user: {Email}", adminEmail);
             var adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
-            var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? "Admin@SecurePass123!";
+            var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD")
+                ?? throw new InvalidOperationException("ADMIN_PASSWORD not set");
             var result = await userManager.CreateAsync(adminUser, adminPassword);
             if (result.Succeeded)
             {
@@ -198,7 +202,6 @@ async Task SeedDatabase(WebApplication app)
         }
 
         var staffEmail = "staff@kitab.com";
-        var staffPassword = Environment.GetEnvironmentVariable("STAFF_PASSWORD") ?? "TempStaffPass123!";
         if (await userManager.FindByEmailAsync(staffEmail) == null)
         {
             logger.LogInformation("Creating staff user: {Email}", staffEmail);
@@ -208,7 +211,8 @@ async Task SeedDatabase(WebApplication app)
                 Email = staffEmail,
                 EmailConfirmed = true
             };
-
+            var staffPassword = Environment.GetEnvironmentVariable("STAFF_PASSWORD")
+                ?? throw new InvalidOperationException("STAFF_PASSWORD not set");
             var result = await userManager.CreateAsync(staff, staffPassword);
             if (result.Succeeded)
             {

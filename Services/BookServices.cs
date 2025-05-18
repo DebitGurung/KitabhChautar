@@ -1,7 +1,8 @@
 ﻿using KitabhChauta.Interfaces;
 using KitabhChauta.Model;
-using kitabhChauta.DbContext;
 using Microsoft.EntityFrameworkCore;
+using kitabhChauta.DbContext;
+using System;
 
 namespace KitabhChauta.Services
 {
@@ -21,6 +22,37 @@ namespace KitabhChauta.Services
                 .Include(b => b.Genre)
                 .Include(b => b.Publisher)
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Book>> GetFilteredBooksAsync(int? genreId, int? authorId, int? publisherId, string? category)
+        {
+            var query = _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Genre)
+                .Include(b => b.Publisher)
+                .AsQueryable();
+
+            if (genreId.HasValue)
+            {
+                query = query.Where(b => b.Genre_id == genreId.Value);
+            }
+
+            if (authorId.HasValue)
+            {
+                query = query.Where(b => b.Author_id == authorId.Value);
+            }
+
+            if (publisherId.HasValue)
+            {
+                query = query.Where(b => b.Publisher_id == publisherId.Value);
+            }
+
+            if (!string.IsNullOrEmpty(category) && System.Enum.TryParse<KitabhChauta.Enum.Category>(category, true, out var categoryEnum))
+            {
+                query = query.Where(b => b.Category == categoryEnum);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Book?> GetBookByIdAsync(int id)
